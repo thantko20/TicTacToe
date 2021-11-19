@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald&family=Quicksand:wght@500&display=swap');
+
+* {
+	box-sizing: border-box;
+	font-family: 'Quicksand', sans-serif;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	color:   #5eb0fd;
+	height: 100vh;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.header {
+	background-color: #000000;
+	display: flex;
+	padding: 16px 24px;
+}
+
+h1 {
+	margin: 0;
+}
+
+.grid-board {
+	align-self: center;
+	margin-top: 100px;
+
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	width: 600px;
+}
+
+.cell {
+	border: 1px solid black;
+	aspect-ratio: 1;
+}
+
+footer {
+	flex-shrink: 0;
+	margin-top: auto;
+
+	background-color: #000000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 22px 0;
+
+	font-size: 1.5rem;
+	font-weight: bold;
+}
