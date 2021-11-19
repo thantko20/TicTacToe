@@ -1,13 +1,16 @@
 const boardElement = document.querySelector('.grid-board');
 
 const player = (name, symbol) => {
-	return {name, symbol};
+  const getName = () => name;
+  const getSymbol = () => symbol;
+
+	return {getName, getSymbol};
 }
 
 const displayController = (function() {
   //const _modalExitButton = document.querySelector('.button.exit');
 
-  const _clearTheBoardDisplay = () => {
+  function _clearTheBoardDisplay() {
     while(boardElement.firstChild) boardElement.removeChild(boardElement.firstChild);
   }
 
@@ -17,7 +20,7 @@ const displayController = (function() {
     // TODO
   }
 
-  const render = grid => {
+  function render(grid) {
     _clearTheBoardDisplay();
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[i].length; j++) {
@@ -37,16 +40,54 @@ const displayController = (function() {
 
 const gameBoard = (function() {
   let grid = [
-    ['X', 'O', ' '],
-    ['X', ' ', 'O'],
-    ['O', ' ', 'X']
-  ]
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', '']
+  ];
 
-  const renderGameBoard = () => {
+  let playerOne = player('Marco', 'X');
+  let playerTwo = player('Forrest', 'O');
+
+  let currentPlayer = playerOne;
+
+  function play() {
+    _renderGameBoard();
+    _listenForCellClick();
+  }
+
+  function _changeCurrentPlayer() {
+    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+  }
+
+  function _addCell(cell) {
+    if(_checkInvalidCell(cell)) return;
+
+    let rowIndex = cell.getAttribute('data-row-index');
+    let columnIndex =cell.getAttribute('data-column-index');
+
+    console.log(grid[rowIndex][columnIndex] === currentPlayer.getSymbol())
+    
+    grid[rowIndex][columnIndex] = currentPlayer.getSymbol();
+
+    _changeCurrentPlayer();
+    _renderGameBoard();
+  }
+
+  function _listenForCellClick() {
+    document.addEventListener('click', e => {
+      if(e.target.className === 'cell') _addCell(e.target);
+    })
+  }
+
+  function _checkInvalidCell(cell) {
+    if(cell.innerText !== '') return true;
+  }
+
+  function _renderGameBoard() {
     displayController.render(grid);
   }
 
-  return {renderGameBoard};
+  return {play};
 })();
 
-
+gameBoard.play();
