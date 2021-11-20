@@ -45,6 +45,54 @@ const gameBoard = (function() {
     ['', '', '']
   ];
 
+  const getGrid = () => grid;
+
+  function play() {
+    _renderGameBoard();
+    _listenForCellClick();
+  }
+
+  function _updateBoard(cell, currentPlayer) {
+    if(_checkInvalidCell(cell)) return;
+
+    let rowIndex = cell.getAttribute('data-row-index');
+    let columnIndex =cell.getAttribute('data-column-index');
+    
+    grid[rowIndex][columnIndex] = currentPlayer.getSymbol();
+  }
+
+  function _checkInvalidCell(cell) {
+    if(cell.innerText !== '') return true;
+  }
+
+  return {getGrid, _updateBoard, _checkInvalidCell};
+})();
+
+const gameOverChecker = (function() {
+  let grid = gameBoard.getGrid();
+
+  function _checkDraw() {
+    let drawChecker = true;
+    grid.forEach(row => {
+      if(row.some(cell => cell === '')){
+        drawChecker = false;
+        return;
+      }
+    })
+
+    return drawChecker;
+  }
+
+  function checkGameOver() {
+    if(_checkDraw()) console.log("Draw!");
+  }
+
+  return {checkGameOver};
+})();
+
+const game = (function() {
+  let grid = gameBoard.getGrid();
+
   let playerOne = player('Marco', 'X');
   let playerTwo = player('Forrest', 'O');
 
@@ -55,32 +103,19 @@ const gameBoard = (function() {
     _listenForCellClick();
   }
 
-  function _changeCurrentPlayer() {
-    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
-  }
-
-  function _addCell(cell) {
-    if(_checkInvalidCell(cell)) return;
-
-    let rowIndex = cell.getAttribute('data-row-index');
-    let columnIndex =cell.getAttribute('data-column-index');
-
-    console.log(grid[rowIndex][columnIndex] === currentPlayer.getSymbol())
-    
-    grid[rowIndex][columnIndex] = currentPlayer.getSymbol();
-
-    _changeCurrentPlayer();
-    _renderGameBoard();
-  }
-
   function _listenForCellClick() {
     document.addEventListener('click', e => {
-      if(e.target.className === 'cell') _addCell(e.target);
-    })
+      if(e.target.className === 'cell' && !gameBoard._checkInvalidCell(e.target)){
+        gameBoard._updateBoard(e.target, currentPlayer);
+        _changeCurrentPlayer();
+        _renderGameBoard();
+        gameOverChecker.checkGameOver();
+      }   
+    });
   }
 
-  function _checkInvalidCell(cell) {
-    if(cell.innerText !== '') return true;
+  function _changeCurrentPlayer() {
+    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
   }
 
   function _renderGameBoard() {
@@ -90,4 +125,4 @@ const gameBoard = (function() {
   return {play};
 })();
 
-gameBoard.play();
+game.play();
