@@ -71,7 +71,44 @@ const gameBoard = (function() {
 const gameOverChecker = (function() {
   let grid = gameBoard.getGrid();
 
-  function _checkDraw() {
+  function checkWin() {
+    // TODO
+    if(_checkHorizontalRow() || _checkVerticalRow() || _checkDiagonalRows()) return true;
+  }
+
+  function _checkHorizontalRow() {
+    // TODO
+    for(let i = 0; i < grid.length; i++) {
+      if(_compareThreeCells(grid[i][0], grid[i][1], grid[i][2])) return true;
+    }
+  }
+
+  function _checkVerticalRow() {
+    // TODO
+    for(let i = 0; i < grid[0].length; i++) {
+      if(_compareThreeCells(grid[0][i], grid[1][i], grid[2][i])) return true;
+    }
+  }
+
+  function _checkDiagonalRows() {
+    return _checkLeftDiagonalRow() || _checkRightDiagonalRow();
+  }
+
+  function _checkLeftDiagonalRow() {
+    // TODO
+    return _compareThreeCells(grid[0][0], grid[1][1], grid[2][2]);
+  }
+
+  function _checkRightDiagonalRow() {
+    // TODO
+    return _compareThreeCells(grid[0][2], grid[1][1], grid[2][0]);
+  }
+
+  function _compareThreeCells(firstCell, secondCell, thirdCell) {
+    return firstCell !== '' && firstCell === secondCell && firstCell === thirdCell;
+  }
+
+  function checkDraw() {
     let drawChecker = true;
     grid.forEach(row => {
       if(row.some(cell => cell === '')){
@@ -83,11 +120,7 @@ const gameOverChecker = (function() {
     return drawChecker;
   }
 
-  function checkGameOver() {
-    if(_checkDraw()) console.log("Draw!");
-  }
-
-  return {checkGameOver};
+  return {checkWin, checkDraw};
 })();
 
 const game = (function() {
@@ -109,7 +142,14 @@ const game = (function() {
         gameBoard._updateBoard(e.target, currentPlayer);
         _changeCurrentPlayer();
         _renderGameBoard();
-        gameOverChecker.checkGameOver();
+        if(gameOverChecker.checkWin()) {
+          // DO SOMETHING
+          console.log('Win!');
+        }
+        if(gameOverChecker.checkDraw()) {
+          // DO SOMETHING
+          console.log('Draw!');
+        }
       }   
     });
   }
