@@ -25,6 +25,7 @@ h1 {
 	margin: 0;
 }
 
+/* Grid */
 .grid-board {
   align-self: center;
   margin-top: auto;
@@ -48,7 +49,7 @@ h1 {
 
 /* Modal Element */
 .overlay {
-  display: none;
+  display: block;
   position: fixed;
   background-color: transparent;
   top: 0;
@@ -57,7 +58,7 @@ h1 {
   height: 100vh;
 }
 
-form {
+form.pvp {
   display: block;
   position: absolute;
   top: 50%;

@@ -1,23 +1,26 @@
 const boardElement = document.querySelector('.grid-board');
 
 const player = (name, symbol) => {
-  const getName = () => name;
   const getSymbol = () => symbol;
 
-	return {getName, getSymbol};
+	return {name, getSymbol};
 }
 
 const displayController = (function() {
-  //const _modalExitButton = document.querySelector('.button.exit');
+  const overlayElement = document.querySelector('.overlay');
+  // const askPlayersNamesForm = document.querySelector('form.pvp');
+
+  function listenNamesSubmit() {
+      let playerNames = {};
+      playerNames.p1Name = document.querySelector('.p1-name').value;
+      playerNames.p2Name = document.querySelector('.p2-name').value;
+      overlayElement.style.display = 'none';
+      
+      return playerNames;
+  }
 
   function _clearTheBoardDisplay() {
     while(boardElement.firstChild) boardElement.removeChild(boardElement.firstChild);
-  }
-
-  //_modalExitButton.addEventListener('click', hideModal);
-
-  const hideModal = () => {
-    // TODO
   }
 
   function render(grid) {
@@ -35,7 +38,7 @@ const displayController = (function() {
     }
   }
 
-  return {render};
+  return {render, listenNamesSubmit};
 })();
 
 const gameBoard = (function() {
@@ -122,12 +125,15 @@ const gameOverChecker = (function() {
 const game = (function() {
   let grid = gameBoard.getGrid();
 
-  let playerOne = player('Marco', 'X');
-  let playerTwo = player('Forrest', 'O');
+  const nameSubmit = document.querySelector('.pvp button')
 
-  let currentPlayer = playerOne;
+  let playerOne;
+  let playerTwo;
+
+  let currentPlayer;
 
   function play() {
+    nameSubmit.addEventListener('click', assignPlayers);
     _renderGameBoard();
     _listenForCellClick();
   }
@@ -139,7 +145,8 @@ const game = (function() {
         _renderGameBoard();
         if(gameOverChecker.checkWin()) {
           // DO SOMETHING
-          console.log(`${currentPlayer.getName()} wins!`);
+          console.log(`${currentPlayer.name} wins!`);
+          return;
         }
         if(gameOverChecker.checkDraw()) {
           // DO SOMETHING
@@ -152,6 +159,15 @@ const game = (function() {
 
   function _changeCurrentPlayer() {
     currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+  }
+
+  function assignPlayers() {
+    let playerOneName = displayController.listenNamesSubmit().p1Name;
+    let playerTwoName = displayController.listenNamesSubmit().p2Name;
+
+    playerOne = player(playerOneName, "X");
+    playerTwo = player(playerTwoName, "O");
+    currentPlayer = playerOne;
   }
 
   function _renderGameBoard() {
