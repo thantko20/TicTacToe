@@ -72,12 +72,10 @@ const gameOverChecker = (function() {
   let grid = gameBoard.getGrid();
 
   function checkWin() {
-    // TODO
     if(_checkHorizontalRow() || _checkVerticalRow() || _checkDiagonalRows()) return true;
   }
 
   function _checkHorizontalRow() {
-    // TODO
     for(let i = 0; i < grid.length; i++) {
       if(_compareThreeCells(grid[i][0], grid[i][1], grid[i][2])) return true;
     }
@@ -95,12 +93,10 @@ const gameOverChecker = (function() {
   }
 
   function _checkLeftDiagonalRow() {
-    // TODO
     return _compareThreeCells(grid[0][0], grid[1][1], grid[2][2]);
   }
 
   function _checkRightDiagonalRow() {
-    // TODO
     return _compareThreeCells(grid[0][2], grid[1][1], grid[2][0]);
   }
 
@@ -140,16 +136,16 @@ const game = (function() {
     document.addEventListener('click', e => {
       if(e.target.className === 'cell' && !gameBoard._checkInvalidCell(e.target)){
         gameBoard._updateBoard(e.target, currentPlayer);
-        _changeCurrentPlayer();
         _renderGameBoard();
         if(gameOverChecker.checkWin()) {
           // DO SOMETHING
-          console.log('Win!');
+          console.log(`${currentPlayer.getName()} wins!`);
         }
         if(gameOverChecker.checkDraw()) {
           // DO SOMETHING
           console.log('Draw!');
         }
+        _changeCurrentPlayer();
       }   
     });
   }
