@@ -1,5 +1,3 @@
-const boardElement = document.querySelector('.grid-board');
-
 const player = (name, symbol) => {
   const getSymbol = () => symbol;
 
@@ -7,16 +5,45 @@ const player = (name, symbol) => {
 }
 
 const displayController = (function() {
-  const overlayElement = document.querySelector('.overlay');
-  // const askPlayersNamesForm = document.querySelector('form.pvp');
+  const body = document.body;
+  const boardElement = document.querySelector('.grid-board');
+
+  const askPlayersNamesForm = document.querySelector('form.pvp');
 
   function listenNamesSubmit() {
-      let playerNames = {};
-      playerNames.p1Name = document.querySelector('.p1-name').value;
-      playerNames.p2Name = document.querySelector('.p2-name').value;
-      overlayElement.style.display = 'none';
-      
-      return playerNames;
+    let playerNames = {};
+    playerNames.p1Name = document.querySelector('.p1-name').value;
+    playerNames.p2Name = document.querySelector('.p2-name').value;
+    askPlayersNamesForm.style.display = 'none';
+    boardElement.style.pointerEvents = 'auto';
+    
+    return playerNames;
+  }
+
+  function _createGameOverMessageElement() {
+    const messageBox = document.createElement('div');
+    messageBox.className = 'game-over';
+    const gameOverState = document.createElement('div');
+    gameOverState.className = 'message';
+    const restartBtn = document.createElement('button');
+    restartBtn.className = 'restart-btn';
+    restartBtn.innerText = 'Restart';
+    messageBox.append(gameOverState, restartBtn);
+    body.appendChild(messageBox);
+  }
+
+  function displayMessageBox(state=null) {
+    _createGameOverMessageElement();
+    const messageBox = document.querySelector('.game-over');
+    const restartBtn = document.querySelector('.restart-btn');
+    const gameOverState = document.querySelector('.message');
+
+    gameOverState.innerText = state ? `${state} wins!` : "Draw!";
+
+    messageBox.style.display = 'flex';
+
+    // Make grid element clickable
+    boardElement.style.pointerEvents = 'none';
   }
 
   function _clearTheBoardDisplay() {
@@ -38,7 +65,7 @@ const displayController = (function() {
     }
   }
 
-  return {render, listenNamesSubmit};
+  return {render, listenNamesSubmit, displayMessageBox};
 })();
 
 const gameBoard = (function() {
@@ -136,6 +163,7 @@ const game = (function() {
     nameSubmit.addEventListener('click', assignPlayers);
     _renderGameBoard();
     _listenForCellClick();
+    _restart();
   }
 
   function _listenForCellClick() {
@@ -143,18 +171,25 @@ const game = (function() {
       if(e.target.className === 'cell' && !gameBoard._checkInvalidCell(e.target)){
         gameBoard._updateBoard(e.target, currentPlayer);
         _renderGameBoard();
-        if(gameOverChecker.checkWin()) {
-          // DO SOMETHING
-          console.log(`${currentPlayer.name} wins!`);
-          return;
-        }
-        if(gameOverChecker.checkDraw()) {
-          // DO SOMETHING
-          console.log('Draw!');
-        }
+        _checkGameOver();
         _changeCurrentPlayer();
       }   
     });
+  }
+
+  function _checkGameOver() {
+    if(gameOverChecker.checkWin()) {
+      // DO SOMETHING
+      console.log(`${currentPlayer.name} wins!`);
+      displayController.displayMessageBox(currentPlayer.name);
+      return;
+    }
+    if(gameOverChecker.checkDraw()) {
+      // DO SOMETHING
+      displayController.displayMessageBox();
+      console.log('Draw!');
+      return;
+    }
   }
 
   function _changeCurrentPlayer() {
@@ -168,6 +203,12 @@ const game = (function() {
     playerOne = player(playerOneName, "X");
     playerTwo = player(playerTwoName, "O");
     currentPlayer = playerOne;
+  }
+
+  function _restart() {
+    document.addEventListener('click', (e) => {
+      if(e.target.className === 'restart-btn') window.location.reload();
+    })
   }
 
   function _renderGameBoard() {
