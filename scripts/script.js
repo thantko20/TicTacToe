@@ -102,7 +102,7 @@ const gameOverChecker = (function() {
   let grid = gameBoard.getGrid();
 
   function checkWin() {
-    if(_checkHorizontalRow() || _checkVerticalRow() || _checkDiagonalRows()) return true;
+    return _checkHorizontalRow() || _checkVerticalRow() || _checkDiagonalRows();
   }
 
   function _checkHorizontalRow() {
