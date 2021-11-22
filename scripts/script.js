@@ -1,9 +1,14 @@
+// player object
+// Only have name and symbol properties
 const player = (name, symbol) => {
   const getSymbol = () => symbol;
 
 	return {name, getSymbol};
 }
 
+// displayController module
+// controls what should be displayed on the web page
+// functions are still sloppy, might refactor later
 const displayController = (function() {
   const body = document.body;
   const boardElement = document.querySelector('.grid-board');
@@ -68,6 +73,9 @@ const displayController = (function() {
   return {render, listenNamesSubmit, displayMessageBox};
 })();
 
+// gameBoard module
+// Handles updating the board and
+// if the cell is occupied or not
 const gameBoard = (function() {
   let grid = [
     ['', '', ''],
@@ -76,11 +84,6 @@ const gameBoard = (function() {
   ];
 
   const getGrid = () => grid;
-
-  function play() {
-    _renderGameBoard();
-    _listenForCellClick();
-  }
 
   function _updateBoard(cell, currentPlayer) {
     if(_checkInvalidCell(cell)) return;
@@ -98,6 +101,9 @@ const gameBoard = (function() {
   return {getGrid, _updateBoard, _checkInvalidCell};
 })();
 
+// gameOverChecker module
+// For checking if the game is over or not
+// after every move
 const gameOverChecker = (function() {
   let grid = gameBoard.getGrid();
 
@@ -149,6 +155,9 @@ const gameOverChecker = (function() {
   return {checkWin, checkDraw};
 })();
 
+// game module
+// this is the main function of the program
+// handles the abstract game logic etc
 const game = (function() {
   let grid = gameBoard.getGrid();
 
