@@ -216,6 +216,7 @@ const game = (function() {
 
   function _restart() {
     document.addEventListener('click', (e) => {
+      e.preventDefault();
       if(e.target.className === 'restart-btn') window.location.reload();
     })
   }
