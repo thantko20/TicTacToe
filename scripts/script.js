@@ -169,7 +169,10 @@ const game = (function() {
   let currentPlayer;
 
   function play() {
-    nameSubmit.addEventListener('click', assignPlayers);
+    nameSubmit.addEventListener('click', (e) => {
+      e.preventDefault();
+      assignPlayers();
+    });
     _renderGameBoard();
     _listenForCellClick();
     _restart();
@@ -188,13 +191,11 @@ const game = (function() {
 
   function _checkGameOver() {
     if(gameOverChecker.checkWin()) {
-      // DO SOMETHING
       console.log(`${currentPlayer.name} wins!`);
       displayController.displayMessageBox(currentPlayer.name);
       return;
     }
     if(gameOverChecker.checkDraw()) {
-      // DO SOMETHING
       displayController.displayMessageBox();
       console.log('Draw!');
       return;
@@ -216,7 +217,6 @@ const game = (function() {
 
   function _restart() {
     document.addEventListener('click', (e) => {
-      e.preventDefault();
       if(e.target.className === 'restart-btn') window.location.reload();
     })
   }
